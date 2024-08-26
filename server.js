@@ -60,7 +60,7 @@ const port = 3000;
 app.use(bodyParser.json());
 
 // Configuração da string de conexão com o MongoDB
-const mongoURI = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority';
+const mongoURI = 'mongodb+srv://larasagaiif:iiw2022@cluster0.mongodb.net/<db_lara>?retryWrites=true&w=majority';
 
 // Conectar ao MongoDB
 mongoose.connect(mongoURI, {
