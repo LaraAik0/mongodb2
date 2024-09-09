@@ -52,3 +52,45 @@
         }
         run();
     </script>
+
+    <!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Ações</title>
+</head>
+<body>
+  <h1>Registro de Ações do Usuário</h1>
+  <form id="actionForm">
+    <label for="userId">ID do Usuário:</label>
+    <input type="text" id="userId" name="userId" required><br>
+    <label for="action">Ação:</label>
+    <input type="text" id="action" name="action" required><br>
+    <button type="submit">Registrar Ação</button>
+  </form>
+  <p id="response"></p>
+
+  <script>
+    document.getElementById('actionForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const userId = document.getElementById('userId').value;
+      const action = document.getElementById('action').value;
+
+      const response = await fetch('/actions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, action }),
+      });
+
+      const result = await response.json();
+      document.getElementById('response').innerText = JSON.stringify(result);
+    });
+  </script>
+</body>
+</html>
+

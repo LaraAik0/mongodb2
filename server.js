@@ -1,7 +1,8 @@
+/*
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 // Substitua pela sua URI de conexão
-const uri = "mongodb+srv://larasagaiif:ILDV7QMBUZKmHh9Q@projeto.9fh2p.mongodb.net/?retryWrites=true&w=majority&appName=projeto";
+const uri = "mongodb+srv://larasagaiif:iiw2022@projeto.9fh2p.mongodb.net/?retryWrites=true&w=majority&appName=projeto";
 
 // Cria uma instância do MongoClient com as opções de API estável
 const client = new MongoClient(uri, {
@@ -60,7 +61,7 @@ const port = 3000;
 app.use(bodyParser.json());
 
 // Configuração da string de conexão com o MongoDB
-const mongoURI = 'mongodb+srv://larasagaiif:iiw2022@cluster0.mongodb.net/<db_lara>?retryWrites=true&w=majority';
+const mongoURI = 'mongodb+srv://larasagaiif:iiw2022.mongodb.net/<db_lara>?retryWrites=true&w=majority';
 
 // Conectar ao MongoDB
 mongoose.connect(mongoURI, {
@@ -104,6 +105,70 @@ app.post('/actions', async (req, res) => {
 app.use(express.static('public'));
 
 // Iniciar o servidor
+app.listen(port, () => {
+  console.log(`Servidor rodando na porta ${port}`);
+});
+*/
+
+
+
+
+
+
+
+// server.js
+
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+// Configuração do Express
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Middleware para interpretar JSON
+app.use(bodyParser.json());
+
+// Conexão com o MongoDB Atlas
+const mongoURI = 'mongodb+srv://larasagaiif:iiw2022@projeto.9fh2p.mongodb.net/?retryWrites=true&w=majority&appName=projeto'; // Substitua pelo seu URI
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('Conectado ao MongoDB!'))
+.catch(err => console.log('Erro de conexão com o MongoDB:', err));
+
+// Definindo o schema e o modelo
+const historicoSchema = new mongoose.Schema({
+  usuario: String,
+  acao: String,
+  data: { type: Date, default: Date.now }
+});
+
+const Historico = mongoose.model('Historico', historicoSchema);
+
+// Endpoint para registrar ações
+app.post('/registro', async (req, res) => {
+  const { usuario, acao } = req.body;
+  if (!usuario || !acao) {
+    return res.status(400).json({ error: 'Usuário e ação são obrigatórios' });
+  }
+  
+  try {
+    const novoRegistro = new Historico({ usuario, acao });
+    await novoRegistro.save();
+    res.status(201).json({ message: 'Ação registrada com sucesso!' });
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao registrar ação', details: error });
+  }
+});
+
+// Endpoint de teste
+app.get('/', (req, res) => {
+  res.send('Servidor funcionando!');
+});
+
+// Iniciando o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
 });
