@@ -117,7 +117,7 @@ app.listen(port, () => {
 
 
 // server.js
-
+/*
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -171,4 +171,84 @@ app.get('/', (req, res) => {
 // Iniciando o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
+});
+*/
+
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+// Configurações do Express
+const app = express();
+app.use(bodyParser.json());
+
+// Conectar ao MongoDB Atlas
+const mongoURI = 'mongodb+srv://larasagaiif:iiw2022@projeto.9fh2p.mongodb.net/?retryWrites=true&w=majority&appName=projeto';
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Conectado ao MongoDB Atlas'))
+    .catch(err => console.error('Erro ao conectar ao MongoDB Atlas:', err));
+
+// Definir Schemas e Models do Mongoose
+const conversationSchema = new mongoose.Schema({
+    userId: String,
+    message: String,
+    timestamp: { type: Date, default: Date.now }
+});
+
+const loginSchema = new mongoose.Schema({
+    userId: String,
+    loginTime: { type: Date, default: Date.now }
+});
+
+const Conversation = mongoose.model('Conversation', conversationSchema);
+const Login = mongoose.model('Login', loginSchema);
+
+// Endpoints para o histórico de conversas
+app.post('/api/conversations', async (req, res) => {
+    try {
+        const { userId, message } = req.body;
+        const newConversation = new Conversation({ userId, message });
+        await newConversation.save();
+        res.status(201).send(newConversation);
+    } catch (error) {
+        res.status(500).send('Erro ao salvar conversa');
+    }
+});
+
+app.get('/api/conversations/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const conversations = await Conversation.find({ userId });
+        res.status(200).send(conversations);
+    } catch (error) {
+        res.status(500).send('Erro ao buscar conversas');
+    }
+});
+
+// Endpoints para logins de acesso
+app.post('/api/logins', async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const newLogin = new Login({ userId });
+        await newLogin.save();
+        res.status(201).send(newLogin);
+    } catch (error) {
+        res.status(500).send('Erro ao salvar login');
+    }
+});
+
+app.get('/api/logins/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const logins = await Login.find({ userId });
+        res.status(200).send(logins);
+    } catch (error) {
+        res.status(500).send('Erro ao buscar logins');
+    }
+});
+
+// Configuração da porta
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
 });

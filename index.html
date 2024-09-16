@@ -63,7 +63,7 @@
 </head>
 <body>
   <h1>Registro de Ações do Usuário</h1>
-  <form id="actionForm">
+  <form id="actionForm"> 
     <label for="userId">ID do Usuário:</label>
     <input type="text" id="userId" name="userId" required><br>
     <label for="action">Ação:</label>
@@ -93,4 +93,98 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <script>
+        async function sendMessage() {
+            const userId = document.getElementById('userId').value;
+            const message = document.getElementById('message').value;
+
+            try {
+                const response = await fetch('/api/conversations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId, message })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Mensagem salva:', data);
+                    alert('Mensagem salva com sucesso!');
+                } else {
+                    alert('Erro ao salvar a mensagem.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao enviar a mensagem.');
+            }
+        }
+
+        async function getConversations() {
+            const userId = document.getElementById('userId').value;
+
+            try {
+                const response = await fetch(`/api/conversations/${userId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Histórico de conversas:', data);
+                    document.getElementById('conversations').textContent = JSON.stringify(data, null, 2);
+                } else {
+                    alert('Erro ao buscar conversas.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao buscar o histórico de conversas.');
+            }
+        }
+
+        async function logUserLogin() {
+            const userId = document.getElementById('userId').value;
+
+            try {
+                const response = await fetch('/api/logins', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Login registrado:', data);
+                    alert('Login registrado com sucesso!');
+                } else {
+                    alert('Erro ao registrar o login.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao registrar o login.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Chatbot</h1>
+    <div>
+        <label for="userId">ID do Usuário:</label>
+        <input type="text" id="userId" placeholder="Digite seu ID">
+    </div>
+    <div>
+        <label for="message">Mensagem:</label>
+        <input type="text" id="message" placeholder="Digite sua mensagem">
+    </div>
+    <button onclick="sendMessage()">Enviar Mensagem</button>
+    <button onclick="getConversations()">Buscar Conversas</button>
+    <button onclick="logUserLogin()">Registrar Login</button>
+    <pre id="conversations"></pre>
+</body>
+</html>
+
 
