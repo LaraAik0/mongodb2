@@ -117,7 +117,7 @@ app.listen(port, () => {
 
 
 // server.js
-
+/*
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -171,4 +171,254 @@ app.get('/', (req, res) => {
 // Iniciando o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
+});
+*/
+
+/*const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+// Configurações do Express
+const app = express();
+app.use(bodyParser.json());
+
+// Conectar ao MongoDB Atlas
+const mongoURI = 'mongodb+srv://larasagaiif:iiw2022@projeto.9fh2p.mongodb.net/?retryWrites=true&w=majority&appName=projeto';
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Conectado ao MongoDB Atlas'))
+    .catch(err => console.error('Erro ao conectar ao MongoDB Atlas:', err));
+
+// Definir Schemas e Models do Mongoose
+const conversationSchema = new mongoose.Schema({
+    userId: String,
+    message: String,
+    timestamp: { type: Date, default: Date.now }
+});
+
+const loginSchema = new mongoose.Schema({
+    userId: String,
+    loginTime: { type: Date, default: Date.now }
+});
+
+const Conversation = mongoose.model('Conversation', conversationSchema);
+const Login = mongoose.model('Login', loginSchema);
+
+// Endpoints para o histórico de conversas
+app.post('/api/conversations', async (req, res) => {
+    try {
+        const { userId, message } = req.body;
+        const newConversation = new Conversation({ userId, message });
+        await newConversation.save();
+        res.status(201).send(newConversation);
+    } catch (error) {
+        res.status(500).send('Erro ao salvar conversa');
+    }
+});
+
+app.get('/api/conversations/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const conversations = await Conversation.find({ userId });
+        res.status(200).send(conversations);
+    } catch (error) {
+        res.status(500).send('Erro ao buscar conversas');
+    }
+});
+
+// Endpoints para logins de acesso
+app.post('/api/logins', async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const newLogin = new Login({ userId });
+        await newLogin.save();
+        res.status(201).send(newLogin);
+    } catch (error) {
+        res.status(500).send('Erro ao salvar login');
+    }
+});
+
+app.get('/api/logins/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const logins = await Login.find({ userId });
+        res.status(200).send(logins);
+    } catch (error) {
+        res.status(500).send('Erro ao buscar logins');
+    }
+});
+
+// Configuração da porta
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+});
+*/
+
+
+
+
+
+/*
+
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Conexão com o MongoDB Atlas
+mongoose.connect('mongodb+srv://larasagaiif:iiw2022@projeto.9fh2p.mongodb.net/?retryWrites=true&w=majority&appName=projeto', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+.then(() => console.log('Conectado ao MongoDB'))
+.catch(err => console.error('Erro de conexão:', err));
+
+// Definição de Schemas e Modelos
+const conversationSchema = new mongoose.Schema({
+    userId: String,
+    message: String,
+    timestamp: { type: Date, default: Date.now }
+});
+
+const loginSchema = new mongoose.Schema({
+    userId: String,
+    loginTime: { type: Date, default: Date.now }
+});
+
+const Conversation = mongoose.model('Conversation', conversationSchema);
+const Login = mongoose.model('Login', loginSchema);
+
+// Endpoints
+app.post('/api/conversations', async (req, res) => {
+    try {
+        const conversation = new Conversation(req.body);
+        await conversation.save();
+        res.status(201).send(conversation);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+app.post('/api/logins', async (req, res) => {
+    try {
+        const login = new Login(req.body);
+        await login.save();
+        res.status(201).send(login);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+app.get('/api/conversations', async (req, res) => {
+    try {
+        const conversations = await Conversation.find();
+        res.send(conversations);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.get('/api/logins', async (req, res) => {
+    try {
+        const logins = await Login.find();
+        res.send(logins);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// Iniciar o servidor
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+});
+*/
+
+
+
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Conexão com o MongoDB Atlas
+mongoose.connect('mongodb+srv://larasagaiif:iiw2022@projeto.9fh2p.mongodb.net/?retryWrites=true&w=majority&appName=projeto', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+.then(() => console.log('Conectado ao MongoDB'))
+.catch(err => console.error('Erro de conexão:', err));
+
+// Definição de Schemas e Modelos
+const conversationSchema = new mongoose.Schema({
+    userId: String,
+    message: String,
+    timestamp: { type: Date, default: Date.now }
+});
+
+const loginSchema = new mongoose.Schema({
+    userId: String,
+    ipAddress: String, // Campo adicionado para armazenar o IP
+    loginTime: { type: Date, default: Date.now }
+});
+
+const Conversation = mongoose.model('Conversation', conversationSchema);
+const Login = mongoose.model('Login', loginSchema);
+
+// Endpoints
+app.post('/api/conversations', async (req, res) => {
+    try {
+        const conversation = new Conversation(req.body);
+        await conversation.save();
+        res.status(201).send(conversation);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+app.post('/api/logins', async (req, res) => {
+    try {
+        const login = new Login({
+            userId: req.body.userId,
+            ipAddress: req.ip // Captura o IP do usuário
+        });
+        await login.save();
+        res.status(201).send(login);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+app.get('/api/conversations', async (req, res) => {
+    try {
+        const conversations = await Conversation.find();
+        res.send(conversations);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+app.get('/api/logins', async (req, res) => {
+    try {
+        const logins = await Login.find();
+        res.send(logins);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// Iniciar o servidor
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
