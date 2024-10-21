@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: chat-pokemon
+    env: static
+    buildCommand: "npm install" # Ou o comando que você usa para instalar dependências (se usar Node.js)
+    startCommand: "npm run start" # Ou o comando que você usa para iniciar o servidor
+    git:
+      repo: https://github.com/LaraAik0/mongodb2 # Substitua pelo seu repositório real
+    branch: main # ou o branch que você deseja usar
+    region: oregon # ou outra região que você deseja
+    instanceType: free # você pode ajustar a quantidade de recursos conforme necessário
+    routes:
+      - type: subdomain
+        name: chat-pokemon.render.com
+    build:
+      envVars:
+        - key: NODE_ENV
+          value: production
+    static:
+      includeFiles:
+        - index.html
+        - login.html
+        - chat.html
+        - style.css
+        - script.js
+    healthCheck:
+      path: "/"
+      interval: 300
+      gracePeriodSeconds: 30
+      timeoutSeconds: 10
+      retries: 5
+      initialDelaySeconds: 0
